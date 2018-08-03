@@ -32,6 +32,7 @@ require(["main"], function () {
             self.infoEventType = ko.observable(null);
             self.infoID = ko.observable(null);
             self.infoBaseEvent = ko.observable(null);
+            self.infoAbstract = ko.observable(null);
             self.infoChair = ko.observable(null);
             self.infoAuthors = ko.observable(null);
             self.schedule = null;
@@ -92,6 +93,24 @@ require(["main"], function () {
                     self.setError("danger", "Error while parsing the conference schedule: Schedule Format Error");
                     throw e;
                 }
+            };
+
+            /*
+            * Load the abstract from a specific URL for display in the modal
+            * info popup.
+            */
+            self.infoLoadAbstract = function (abstractURL, doAfer) {
+                self.infoAbstract(null);
+                $.getJSON(abstractURL, onAbstractData);
+
+                function onAbstractData (abstractObj) {
+                    if (abstractObj !== null && abstractObj !== undefined) {
+                        self.infoAbstract(models.Abstract.fromObject(abstractObj));
+                        if (doAfer !== null && doAfer !== undefined) {
+                            doAfer();
+                        }
+                    }
+                };
             };
 
             // check if a track or session can be split
@@ -279,6 +298,8 @@ require(["main"], function () {
                             formattedAuthors = self.infoBaseEvent().authors;
                         }
                         self.infoAuthors(formattedAuthors);
+                        self.infoLoadAbstract(self.infoBaseEvent().abstract);
+                        console.log(JSON.stringify(self.infoAbstract(),null,4));
                     }
                     $("#conference-scheduler-info").modal("show");
                 }
