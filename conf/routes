@@ -99,3 +99,6 @@ POST          /mail                                           @controllers.Accou
 
 GET            /mob/conferences                               @controllers.Mobile.Conferences
 GET            /mob/conference/:id                            @controllers.Mobile.Conference(id: String)
+
+OPTIONS        /                                              @controllers.Application.options(path="")
+OPTIONS        /*path                                         @controllers.Application.options(path)
